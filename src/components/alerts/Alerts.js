@@ -1,15 +1,34 @@
 import React, {useState, useEffect} from 'react';
 import { alerts } from '../alerts-mockup';
-import {Link, useParams} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 
 
 const Alerts = () => {
 
     const itemsPerPage = 4;
-    const [pageCount, setPageCount] = useState(0);
-    const [currentItems, setCurrentItems] = useState(alerts);
-    const [itemOffset, setItemOffset] = useState(0);
+    const pageOffsetInProgress = window.location.href.split("alerts/");
+    const rowsOffset = pageOffsetInProgress[1] ? parseInt(pageOffsetInProgress[1]) : 0;
+    let pageCountInitial = 0;
+    let currentItemsInitial = alerts;
+    let itemsOffsetInitial = 0;
+    let forcePageInitial = 0;
+
+    const [isInitialOffset, setIsInitialOffset] = useState(0);
+
+
+    if(isInitialOffset === 0 && rowsOffset > 0) {
+        const endOffset = rowsOffset + itemsPerPage;
+        itemsOffsetInitial = rowsOffset;
+        currentItemsInitial = alerts.slice(itemsOffsetInitial, endOffset);
+        pageCountInitial = Math.ceil(alerts.length / itemsPerPage);
+        forcePageInitial = rowsOffset/itemsPerPage
+
+    }
+    const [forcePage, setForcePage] = useState(forcePageInitial);
+    const [pageCount, setPageCount] = useState(pageCountInitial);
+    const [currentItems, setCurrentItems] = useState(currentItemsInitial);
+    const [itemOffset, setItemOffset] = useState(itemsOffsetInitial);
 
     useEffect(() => {
         // Fetch items from another resources.
@@ -23,6 +42,7 @@ const Alerts = () => {
     const handlePageClick = (event) => {
         const newOffset = (event.selected * itemsPerPage) % alerts.length;
         setItemOffset(newOffset);
+        setIsInitialOffset(0);
     };
 
     return (
@@ -30,6 +50,7 @@ const Alerts = () => {
             <h1>Alert Page</h1>
             <Items currentItems={currentItems} currentOffset={itemOffset}/>
             <ReactPaginate
+                forcePage={forcePage}
                 previousLabel={"← Previous"}
                 nextLabel={"Next →"}
                 pageCount={pageCount}
