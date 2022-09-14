@@ -24,7 +24,7 @@ const ReactRouterSetup = () => {
         <Route path='/alerts'>
           <Alerts />
         </Route>
-        <Route path='/alert/:id/:currentOffset' children={<Alert />}></Route>
+        <Route path='/alert/:id/:currentPage' children={<Alert />}></Route>
         <Route path='*'>
           <Error />
         </Route>

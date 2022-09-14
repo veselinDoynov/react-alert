@@ -1,12 +1,12 @@
 import React from "react";
 import { Pagination } from "antd";
-import "../../index.css";
+import "./styles.css";
 import "antd/dist/antd.css";
-import {alerts} from '../alerts-mockup';
+import {data} from '../alerts-mockup';
 import {Link} from "react-router-dom";
 
 
-const pageSize = 4;
+const pageSize = 6;
 
 class Alerts extends React.Component {
     state = {
@@ -19,8 +19,8 @@ class Alerts extends React.Component {
 
     componentDidMount() {
         this.setState({
-            data: alerts,
-            totalPage: alerts.length / pageSize,
+            data,
+            totalPage: data.length / pageSize,
             minIndex: 0,
             maxIndex: pageSize
         })
@@ -39,7 +39,7 @@ class Alerts extends React.Component {
         return (
             <>
                 <h1>Alert Page</h1>
-                <Items  data = {data} minIndex= {minIndex} maxIndex= {maxIndex} currentPage = {current} />
+                <Items  {data} {minIndex} {maxIndex} />
                 <Pagination
                     pageSize={pageSize}
                     current={current}
@@ -53,20 +53,20 @@ class Alerts extends React.Component {
     }
 }
 
-const Items = ({ data, minIndex, maxIndex, currentPage }) =>  {
+const Items = ({ data, minIndex, maxIndex }) =>  {
     return (
         <>
-            {data?.map(
-            (alert, index) =>
-                index >= minIndex &&
-                index < maxIndex && (
-                    <div key={alert.id} className='item'>
-                        <h4>{alert.name}</h4>
-                        <h3>{alert.date}</h3>
-                        <Link to={`/alert/${alert.id}/${currentPage}`}>Open</Link>
-                    </div>
-                )
-        )}
+            return {data?.map(
+                (data, index) =>
+                    index >= minIndex &&
+                    index < maxIndex && (
+                        <div key={alert.id} className='item'>
+                            <h4>{alert.name}</h4>
+                            <h3>{alert.date}</h3>
+                            <Link to={`/alert/${alert.id}/${currentOffset}`}>Open</Link>
+                        </div>
+                    )
+            )}
         </>
     );
 }

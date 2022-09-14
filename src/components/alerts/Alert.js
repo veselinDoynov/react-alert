@@ -3,7 +3,7 @@ import { alerts } from '../alerts-mockup';
 import { Link, useParams } from 'react-router-dom';
 const Alert = () => {
   const [name, setName] = useState('default name');
-  const { id, currentOffset } = useParams();
+  const { id, currentPage } = useParams();
 
 
   useEffect(() => {
@@ -13,7 +13,7 @@ const Alert = () => {
   return (
     <div>
       <h1>{name}</h1>
-        <Link to={`/alerts/${currentOffset}`} className='btn'>Back To Alerts</Link>
+        <Link to={`/alerts/${currentPage}`} className='btn'>Back To Alerts</Link>
     </div>
   );
 };
