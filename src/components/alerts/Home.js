@@ -1,10 +1,25 @@
 import React from 'react';
-
+import { PageHeader } from "antd";
 const Home = () => {
   return (
-    <div>
-      <h1>Alerts home page</h1>
-    </div>
+    <>
+        <PageHeader
+            className="site-page-header"
+            title="Home page"
+
+            subTitle="This is the alerts home page"
+        />
+        <div>
+            <p>Content in here ...</p>
+            <p>Content in here ...</p>
+            <p>Content in here ...</p>
+            <p>Content in here ...</p>
+            <p>Content in here ...</p>
+            <p>Content in here ...</p>
+            <p>Content in here ...</p>
+            <p>Content in here ...</p>
+        </div>
+    </>
   );
 };
 

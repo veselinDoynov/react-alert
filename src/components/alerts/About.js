@@ -1,10 +1,26 @@
 import React from 'react';
+import {PageHeader} from "antd";
 
 const About = () => {
   return (
-    <div>
-      <h1>React me gently ...</h1>
-    </div>
+      <>
+          <PageHeader
+              className="site-page-header"
+              title="About page"
+
+              subTitle="React me gently ..."
+          />
+          <div>
+              <p>Content in here ...</p>
+              <p>Content in here ...</p>
+              <p>Content in here ...</p>
+              <p>Content in here ...</p>
+              <p>Content in here ...</p>
+              <p>Content in here ...</p>
+              <p>Content in here ...</p>
+              <p>Content in here ...</p>
+          </div>
+      </>
   );
 };
 
