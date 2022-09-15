@@ -1,9 +1,5 @@
 import React from 'react';
 
-import { Divider, Radio, Typography } from 'antd';
-
-const { Paragraph } = Typography;
-
 const Home = () => {
   return (
     <div>

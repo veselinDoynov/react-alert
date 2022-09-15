@@ -1,19 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { alerts } from '../alerts-mockup';
-import { Link, useParams } from 'react-router-dom';
-const Alert = () => {
-  const [name, setName] = useState('default name');
-  const { id, currentPage } = useParams();
+import { Table  } from "antd";
+import "../../index.css";
+import "antd/dist/antd.css";
+const Alert = ({id}) => {
+  const [alert, setAlert] = useState([]);
+
+    const columns = [
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'Date',
+            dataIndex: 'date',
+            key: 'date',
+        },
+        {
+            title: 'Alert description',
+            dataIndex: 'moreDetails',
+            key: 'moreDetails',
+        },
+
+    ];
 
 
   useEffect(() => {
     const newAlert = alerts.find((alert) => alert.id === parseInt(id));
-    setName(newAlert.name);
-  }, []);
+    setAlert(newAlert);
+  });
   return (
-    <div>
-      <h1>{name}</h1>
-        <Link to={`/alerts/${currentPage}`} className='btn'>Back To Alerts</Link>
+    <div className="container">
+        <h3>{alert.name}</h3>
+        <Table
+            dataSource={[alert]}
+            columns={columns}
+            pagination={false}
+        />
     </div>
   );
 };
