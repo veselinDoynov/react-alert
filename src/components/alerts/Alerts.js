@@ -65,6 +65,7 @@ const columns = [
         title: 'Date',
         dataIndex: 'date',
         key: 'date',
+        sorter: (a, b) => moment(a.date) - moment(b.date),
         filterDropdown: ({
                              setSelectedKeys,
                              selectedKeys,
@@ -159,7 +160,7 @@ class Alerts extends React.Component {
                             }, // click row
                         };
                     }}
-                />;
+                />
             </>
 
         );

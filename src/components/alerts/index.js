@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import 'antd/dist/antd.css';
 import '../../index.css';
-import {Breadcrumb, Layout, Menu} from 'antd';
+import {Layout, Menu} from 'antd';
 import Alerts from "./Alerts";
 import Home from "./Home";
 import About from "./About";
@@ -17,7 +17,7 @@ const items = [
 ]
 
 const App = () => {
-    const [seletectCompoment, setSelectedComponent] = useState(<Home/>)
+    const [selectedComponent, setSelectedComponent] = useState(<Home/>)
     const componentsSwitch = (key) => {
 
         switch (key) {
@@ -57,7 +57,7 @@ const App = () => {
                 }}
             >
                 <br/>
-                {seletectCompoment}
+                {selectedComponent}
             </Content>
             <Footer
                 style={{
