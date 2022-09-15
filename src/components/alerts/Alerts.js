@@ -1,20 +1,108 @@
 import React from "react";
-import { Table  } from "antd";
+import { Table, Input, Button, DatePicker} from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import "../../index.css";
 import "antd/dist/antd.css";
 import {alerts} from '../alerts-mockup';
 import Alert from "./Alert";
+import moment from "moment";
 
 const columns = [
     {
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
+        filterDropdown: ({
+                             setSelectedKeys,
+                             selectedKeys,
+                             confirm,
+                             clearFilters,
+                         }) => {
+            return (
+                <>
+                    <Input
+                        autoFocus
+                        placeholder="Search ..."
+                        value={selectedKeys[0]}
+                        onChange={(e) => {
+                            setSelectedKeys(e.target.value ? [e.target.value] : []);
+                            confirm({ closeDropdown: false });
+                        }}
+                        onPressEnter={() => {
+                            confirm();
+                        }}
+                        onBlur={() => {
+                            confirm();
+                        }}
+                    ></Input>
+                    <Button
+                        onClick={() => {
+                            confirm();
+                        }}
+                        type="primary"
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            clearFilters();
+                        }}
+                        type="warning"
+                    >
+                        Reset
+                    </Button>
+                </>
+            )
+        },
+        filterIcon: () => {
+            return <SearchOutlined />
+        },
+        onFilter: (value, record) => {
+            return record.name.toLowerCase().includes(value.toLowerCase());
+        },
     },
     {
         title: 'Date',
         dataIndex: 'date',
         key: 'date',
+        filterDropdown: ({
+                             setSelectedKeys,
+                             selectedKeys,
+                             confirm,
+                             clearFilters,
+                         }) => {
+            return (
+                <>
+                    <DatePicker.RangePicker
+                        style={{ marginBottom: 8, display: 'block' }}
+                        value={selectedKeys[0]}
+                        onChange={e => setSelectedKeys(e ? [e] : [])}
+                    />
+                    <Button
+                        onClick={() => {
+                            confirm();
+                        }}
+                        type="primary"
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            clearFilters();
+                        }}
+                        type="warning"
+                    >
+                        Reset
+                    </Button>
+                </>
+            )
+        },
+        filterIcon: () => {
+            return <SearchOutlined />
+        },
+        onFilter: (value, record) => {
+            return record.date ? moment(record.date).isBetween(value[0], value[1], 'day', '[]') : ""
+        }
     },
     {
         title: 'Open',
