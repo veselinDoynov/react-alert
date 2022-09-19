@@ -115,6 +115,18 @@ const columns = [
         title: 'Type',
         dataIndex: 'Typename',
         key: 'Typename',
+        filters: [
+            {
+                text: 'MESSAGE',
+                value: 'MESSAGE',
+            },
+            {
+                text: 'ALERT',
+                value: 'ALERT',
+            },
+        ],
+        onFilter: (value, record) => record.Typename.startsWith(value),
+        filterSearch: true,
     },
     {
         title: 'Message',
@@ -123,7 +135,7 @@ const columns = [
         render: function( text ) { return <div dangerouslySetInnerHTML={{__html: text}} />; }
     },
     {
-        title: 'Open',
+        title: '',
         dataIndex: 'link',
         key: 'link',
     },
