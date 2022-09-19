@@ -1,44 +1,69 @@
 import React, { useState, useEffect } from 'react';
-import { alerts } from '../alerts-mockup';
 import { Table  } from "antd";
 import "../../index.css";
 import "antd/dist/antd.css";
+
+
+import {getRequest, postRequest} from "../services/ApiRequests";
+import moment from "moment";
+
+const url = 'https://sugarcrm-test.internal.degiro.eu/sugar_spice_api_test/messages.php'
+
 const Alert = ({id}) => {
-  const [alert, setAlert] = useState([]);
+    const [alert, setAlert] = useState([]);
 
     const columns = [
         {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
+            title: 'Titel',
+            dataIndex: 'Titel',
+            key: 'Titel',
         },
         {
-            title: 'Date',
-            dataIndex: 'date',
-            key: 'date',
+            title: 'Begindatum',
+            dataIndex: 'Begindatum',
+            key: 'Begindatum',
+            render: function( date ) {
+                return moment(date).toLocaleString();
+            }
         },
         {
-            title: 'Alert description',
-            dataIndex: 'moreDetails',
-            key: 'moreDetails',
+            title: 'Message',
+            dataIndex: 'text',
+            key: 'text',
+            render: function( text ) { return <div dangerouslySetInnerHTML={{__html: text}} />; }
         },
 
     ];
 
 
   useEffect(() => {
-    const newAlert = alerts.find((alert) => alert.id === parseInt(id));
-    setAlert(newAlert);
+      getRequest(url, {
+          headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Content-Type': 'application/json',
+              //'Cookie':'PHPSESSID=e51f435753622e2b2b6be8b11b09685f'
+          }
+      }).then( response => {
+          const newAlert = response.response.find((alert) => alert.id === parseInt(id));
+          setAlert(newAlert);
+      })
   });
   return (
-    <div className="container">
-        <h3>{alert.name}</h3>
-        <Table
-            dataSource={[alert]}
-            columns={columns}
-            pagination={false}
-        />
-    </div>
+    <>
+
+        {alert.id == id ? (
+            <>
+                <h3>{alert.Titel}</h3>
+                <Table
+                    dataSource={[alert]}
+                    columns={columns}
+                    pagination={false}
+                />
+            </>
+        ) : (
+            <p>Loading ...</p>
+        )}
+    </>
   );
 };
 

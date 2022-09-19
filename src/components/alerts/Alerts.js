@@ -6,12 +6,15 @@ import "antd/dist/antd.css";
 import {alerts} from '../alerts-mockup';
 import Alert from "./Alert";
 import moment from "moment";
+import {getRequest, postRequest} from "../services/ApiRequests";
+
+const url = 'https://sugarcrm-test.internal.degiro.eu/sugar_spice_api_test/messages.php'
 
 const columns = [
     {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
+        title: 'Titel',
+        dataIndex: 'Titel',
+        key: 'Titel',
         filterDropdown: ({
                              setSelectedKeys,
                              selectedKeys,
@@ -58,14 +61,14 @@ const columns = [
             return <SearchOutlined />
         },
         onFilter: (value, record) => {
-            return record.name.toLowerCase().includes(value.toLowerCase());
+            return record.Titel.toLowerCase().includes(value.toLowerCase());
         },
     },
     {
-        title: 'Date',
-        dataIndex: 'date',
-        key: 'date',
-        sorter: (a, b) => moment(a.date) - moment(b.date),
+        title: 'Begindatum',
+        dataIndex: 'Begindatum',
+        key: 'Begindatum',
+        sorter: (a, b) => moment(a.Begindatum) - moment(b.Begindatum),
         filterDropdown: ({
                              setSelectedKeys,
                              selectedKeys,
@@ -78,6 +81,7 @@ const columns = [
                         style={{ marginBottom: 8, display: 'block' }}
                         value={selectedKeys[0]}
                         onChange={e => setSelectedKeys(e ? [e] : [])}
+                        dateFormat={"d/M/Y h:mm"}
                     />
                     <Button
                         onClick={() => {
@@ -102,8 +106,20 @@ const columns = [
             return <SearchOutlined />
         },
         onFilter: (value, record) => {
-            return record.date ? moment(record.date).isBetween(value[0], value[1], 'day', '[]') : ""
+
+            return record.Begindatum ? moment(record.Begindatum).isBetween(value[0], value[1], 'day', '[]') : ""
         }
+    },
+    {
+        title: 'Type',
+        dataIndex: 'Typename',
+        key: 'Typename',
+    },
+    {
+        title: 'Message',
+        dataIndex: 'text',
+        key: 'text',
+        render: function( text ) { return <div dangerouslySetInnerHTML={{__html: text}} />; }
     },
     {
         title: 'Open',
@@ -118,18 +134,31 @@ class Alerts extends React.Component {
         data: [],
         showAlert: false,
         alertId : 0,
+        alertsData: [],
     };
 
     componentDidMount() {
 
+        getRequest(url, {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json',
+                //'Cookie':'PHPSESSID=e51f435753622e2b2b6be8b11b09685f'
+            }
+        }).then( response => {
+            this.setState({
+                alertsData: this.updateData(response.response),
+            })
+        })
         this.setState({
             data: this.updateData(alerts),
         })
+
     }
 
     updateData = (data) => {
         return data.map((row)  => {
-            return  {...row, link:<a href="#" id={`${row.id}`} >View Alert</a>};
+            return  {...row, link:<a href="#" id={`${row.id}`} >View</a>, key: `${row.id}`};
         });
     }
 
@@ -142,27 +171,33 @@ class Alerts extends React.Component {
     }
 
     render() {
-        const { data} = this.state;
+        const { data, alertsData } = this.state;
+
         return (
             <>
-                <br/>
-                {this.state.showAlert ? <Alert id={this.state.alertId}/> :''}
-                <br/>
-                <h3>Alerts</h3>
-                <Table
-                    dataSource={data}
-                    columns={columns}
-                    pagination={{ showSizeChanger: true}}
-                    onRow={(record, rowIndex) => {
-                        return {
-                            onClick: event => {
-                                this.showAlert(record.id);
-                            }, // click row
-                        };
-                    }}
-                />
+                {alertsData.length > 0 ? (
+                    <>
+                        <br/>
+                        {this.state.showAlert ? <Alert id={this.state.alertId}/> :''}
+                        <br/>
+                        <h3>Alerts</h3>
+                        <Table
+                            dataSource={alertsData}
+                            columns={columns}
+                            pagination={{ showSizeChanger: true}}
+                            onRow={(record, rowIndex) => {
+                                return {
+                                    onClick: event => {
+                                        this.showAlert(record.id);
+                                    }, // click row
+                                };
+                            }}
+                        />
+                    </>
+                ) : (
+                    <p>Loading ...</p>
+                )}
             </>
-
         );
     }
 }
