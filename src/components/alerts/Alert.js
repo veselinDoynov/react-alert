@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table  } from "antd";
+import {Spin, Table} from "antd";
 import "../../index.css";
 import "antd/dist/antd.css";
 
@@ -61,7 +61,7 @@ const Alert = ({id}) => {
                 />
             </>
         ) : (
-            <p>Loading ...</p>
+            <Spin size="large" tip="Loading..."/>
         )}
     </>
   );

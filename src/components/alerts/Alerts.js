@@ -4,9 +4,10 @@ import { SearchOutlined } from "@ant-design/icons";
 import "../../index.css";
 import "antd/dist/antd.css";
 import {alerts} from '../alerts-mockup';
-import Alert from "./Alert";
+import AlertComponent from "./Alert";
 import moment from "moment";
 import {getRequest, postRequest} from "../services/ApiRequests";
+import { Alert, Spin } from 'antd';
 
 const url = 'https://sugarcrm-test.internal.degiro.eu/sugar_spice_api_test/messages.php'
 
@@ -178,7 +179,7 @@ class Alerts extends React.Component {
                 {alertsData.length > 0 ? (
                     <>
                         <br/>
-                        {this.state.showAlert ? <Alert id={this.state.alertId}/> :''}
+                        {this.state.showAlert ? <AlertComponent id={this.state.alertId}/> :''}
                         <br/>
                         <h3>Alerts</h3>
                         <Table
@@ -195,7 +196,7 @@ class Alerts extends React.Component {
                         />
                     </>
                 ) : (
-                    <p>Loading ...</p>
+                    <Spin size="large" tip="Loading..."/>
                 )}
             </>
         );
