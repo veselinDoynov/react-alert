@@ -6,10 +6,12 @@ import "antd/dist/antd.css";
 import {alerts} from '../alerts-mockup';
 import AlertComponent from "./Alert";
 import moment from "moment";
-import {getRequest, postRequest} from "../services/ApiRequests";
+import {getRequest, postRequest, postRequestFromData} from "../services/ApiRequests";
 import { Alert, Spin } from 'antd';
 
 const url = 'https://sugarcrm-test.internal.degiro.eu/sugar_spice_api_test/messages.php'
+const urlLogin = 'https://awt-test.i.degiro.eu/dg-security-oauth2-ws/login'
+const loginUrlOauth = 'https://awt-test.i.degiro.eu/dg-security-oauth2-ws/oauth/token?grant_type=password&client_id=sugar&response_type=token';
 
 const columns = [
     {
@@ -151,6 +153,13 @@ class Alerts extends React.Component {
     };
 
     componentDidMount() {
+
+        let postData = {username: 'awt', password: 'awt'}
+
+        postRequestFromData(loginUrlOauth, postData).then( response => {
+            let token = response.data.access_token;
+            console.log(token);
+        })
 
         getRequest(url, {
             headers: {
