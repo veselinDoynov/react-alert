@@ -3,7 +3,6 @@ import {Table, Input, Button, DatePicker} from "antd";
 import {SearchOutlined} from "@ant-design/icons";
 import "../../index.css";
 import "antd/dist/antd.css";
-import {alerts} from '../alerts-mockup';
 import AlertComponent from "./Alert";
 import moment from "moment";
 import {getRequest, postRequest, postRequestFromData} from "../services/ApiRequests";
