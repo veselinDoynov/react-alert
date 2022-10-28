@@ -1,17 +1,14 @@
 import React from "react";
-import { Table, Input, Button, DatePicker} from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import {Table, Input, Button, DatePicker} from "antd";
+import {SearchOutlined} from "@ant-design/icons";
 import "../../index.css";
 import "antd/dist/antd.css";
 import {alerts} from '../alerts-mockup';
 import AlertComponent from "./Alert";
 import moment from "moment";
 import {getRequest, postRequest, postRequestFromData} from "../services/ApiRequests";
-import { Alert, Spin } from 'antd';
+import {Alert, Spin} from 'antd';
 
-const url = 'https://sugarcrm-test.internal.degiro.eu/sugar_spice_api_test/messages.php'
-const urlLogin = 'https://awt-test.i.degiro.eu/dg-security-oauth2-ws/login'
-const loginUrlOauth = 'https://awt-test.i.degiro.eu/dg-security-oauth2-ws/oauth/token?grant_type=password&client_id=sugar&response_type=token';
 
 const columns = [
     {
@@ -32,7 +29,7 @@ const columns = [
                         value={selectedKeys[0]}
                         onChange={(e) => {
                             setSelectedKeys(e.target.value ? [e.target.value] : []);
-                            confirm({ closeDropdown: false });
+                            confirm({closeDropdown: false});
                         }}
                         onPressEnter={() => {
                             confirm();
@@ -61,7 +58,7 @@ const columns = [
             )
         },
         filterIcon: () => {
-            return <SearchOutlined />
+            return <SearchOutlined/>
         },
         onFilter: (value, record) => {
             return record.Titel.toLowerCase().includes(value.toLowerCase());
@@ -81,7 +78,7 @@ const columns = [
             return (
                 <>
                     <DatePicker.RangePicker
-                        style={{ marginBottom: 8, display: 'block' }}
+                        style={{marginBottom: 8, display: 'block'}}
                         value={selectedKeys[0]}
                         onChange={e => setSelectedKeys(e ? [e] : [])}
                         dateFormat={"d/M/Y h:mm"}
@@ -106,7 +103,7 @@ const columns = [
             )
         },
         filterIcon: () => {
-            return <SearchOutlined />
+            return <SearchOutlined/>
         },
         onFilter: (value, record) => {
 
@@ -134,7 +131,9 @@ const columns = [
         title: 'Message',
         dataIndex: 'text',
         key: 'text',
-        render: function( text ) { return <div dangerouslySetInnerHTML={{__html: text}} />; }
+        render: function (text) {
+            return <div dangerouslySetInnerHTML={{__html: text}}/>;
+        }
     },
     {
         title: '',
@@ -148,39 +147,36 @@ class Alerts extends React.Component {
     state = {
         data: [],
         showAlert: false,
-        alertId : 0,
+        alertId: 0,
         alertsData: [],
     };
 
     componentDidMount() {
 
-        let postData = {username: 'awt', password: 'awt'}
+        let postData = {username: process.env.REACT_APP_AWT_USERNAME, password: process.env.REACT_APP_AWT_PASSWORD}
 
-        postRequestFromData(loginUrlOauth, postData).then( response => {
+        postRequestFromData(process.env.REACT_APP_AWT_LOGIN, postData).then(response => {
             let token = response.data.access_token;
-            console.log(token);
-        })
 
-        getRequest(url, {
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json',
-                //'Cookie':'PHPSESSID=e51f435753622e2b2b6be8b11b09685f'
-            }
-        }).then( response => {
-            this.setState({
-                alertsData: this.updateData(response.response),
+            getRequest(process.env.REACT_APP_ALERTS_URI, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                }
+            }).then(response => {
+                this.setState({
+                    alertsData: this.updateData(response.response)
+                });
             })
-        })
-        this.setState({
-            data: this.updateData(alerts),
-        })
 
+        })
     }
 
     updateData = (data) => {
-        return data.map((row)  => {
-            return  {...row, link:<a href="#" id={`${row.id}`} >View</a>, key: `${row.id}`};
+        return data.map((row) => {
+            return {...row, link: <a href="#" id={`${row.id}`}>View</a>, key: `${row.id}`};
         });
     }
 
@@ -193,20 +189,20 @@ class Alerts extends React.Component {
     }
 
     render() {
-        const { data, alertsData } = this.state;
+        const {data, alertsData} = this.state;
 
         return (
             <>
                 {alertsData.length > 0 ? (
                     <>
                         <br/>
-                        {this.state.showAlert ? <AlertComponent id={this.state.alertId}/> :''}
+                        {this.state.showAlert ? <AlertComponent id={this.state.alertId}/> : ''}
                         <br/>
                         <h3>Alerts</h3>
                         <Table
                             dataSource={alertsData}
                             columns={columns}
-                            pagination={{ showSizeChanger: true}}
+                            pagination={{showSizeChanger: true}}
                             onRow={(record, rowIndex) => {
                                 return {
                                     onClick: event => {

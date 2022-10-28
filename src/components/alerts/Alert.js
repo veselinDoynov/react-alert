@@ -4,10 +4,8 @@ import "../../index.css";
 import "antd/dist/antd.css";
 
 
-import {getRequest, postRequest} from "../services/ApiRequests";
+import {getRequest, postRequest, postRequestFromData} from "../services/ApiRequests";
 import moment from "moment";
-
-const url = 'https://sugarcrm-test.internal.degiro.eu/sugar_spice_api_test/messages.php'
 
 const Alert = ({id}) => {
     const [alert, setAlert] = useState([]);
@@ -37,15 +35,23 @@ const Alert = ({id}) => {
 
 
   useEffect(() => {
-      getRequest(url, {
-          headers: {
-              'Access-Control-Allow-Origin': '*',
-              'Content-Type': 'application/json',
-              //'Cookie':'PHPSESSID=e51f435753622e2b2b6be8b11b09685f'
-          }
-      }).then( response => {
-          const newAlert = response.response.find((alert) => alert.id === parseInt(id));
-          setAlert(newAlert);
+
+      let postData = {username: process.env.REACT_APP_AWT_USERNAME, password: process.env.REACT_APP_AWT_PASSWORD}
+      postRequestFromData(process.env.REACT_APP_AWT_LOGIN, postData).then(response => {
+          let token = response.data.access_token;
+
+          getRequest(process.env.REACT_APP_ALERTS_URI, {
+              headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                  'Access-Control-Allow-Origin': '*',
+              }
+          }).then(response => {
+              const newAlert = response.response.find((alert) => alert.id === parseInt(id));
+              setAlert(newAlert);
+          })
+
       })
   });
   return (
